@@ -123,3 +123,4 @@ Die bestehende `Gemüse_KW16.xlsx` kann als Vorlage genutzt werden.
 | `admin` | `admin` |
 
 Das Passwort kann im Profil-Bereich jederzeit geändert werden.
+# gemuesekisterl
