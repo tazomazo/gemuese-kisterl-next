@@ -48,7 +48,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-md px-4 py-12">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Profil bearbeiten</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">Einstellungen</h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 rounded-2xl border bg-white p-6 shadow-sm">
         {/* Name */}

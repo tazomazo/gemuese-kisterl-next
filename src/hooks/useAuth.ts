@@ -70,5 +70,54 @@ export function useAuth() {
     }
   };
 
-  return { user, isAdmin, loading, error, setError, signIn, signOut, updateProfile };
+  const register = async (name: string, password?: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, password }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Registrierung fehlgeschlagen');
+        return false;
+      }
+      const authUser: AuthUser = await res.json();
+      login(authUser);
+      router.push('/');
+      return true;
+    } catch {
+      setError('Netzwerkfehler');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (name: string, newPassword: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, newPassword }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Zurücksetzen fehlgeschlagen');
+        return false;
+      }
+      return true;
+    } catch {
+      setError('Netzwerkfehler');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { user, isAdmin, loading, error, setError, signIn, signOut, register, resetPassword, updateProfile };
 }

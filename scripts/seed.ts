@@ -26,7 +26,7 @@ async function seed() {
   console.log('🌱 Seeding database…');
 
   // Admin user
-  const adminHash = await bcrypt.hash('admin', 10);
+  const adminHash = await bcrypt.hash('admin123', 10);
   const { error: userError } = await supabase
     .from('users')
     .upsert({ name: 'admin', password_hash: adminHash, is_admin: true }, { onConflict: 'name' });
@@ -34,7 +34,7 @@ async function seed() {
   if (userError) {
     console.error('❌ Admin user:', userError.message);
   } else {
-    console.log('✅ Admin user (admin / admin)');
+    console.log('✅ Admin user (admin / admin123)');
   }
 
   // Example categories
