@@ -7,7 +7,7 @@ const STORAGE_KEY = 'gk-user';
 
 interface AuthContextValue {
   user: AuthUser | null;
-  login: (user: AuthUser) => void;
+  login: (_user: AuthUser) => void;
   logout: () => void;
   isAdmin: boolean;
 }

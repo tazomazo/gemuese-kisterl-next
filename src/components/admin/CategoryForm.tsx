@@ -7,7 +7,7 @@ import Button from '@/components/ui/Button';
 
 interface CategoryFormProps {
   initial?: Category | null;
-  onSubmit: (name: string) => Promise<void>;
+  onSubmit: (_name: string) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
 }

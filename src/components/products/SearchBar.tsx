@@ -2,7 +2,7 @@
 
 interface SearchBarProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (_value: string) => void;
 }
 
 export default function SearchBar({ value, onChange }: SearchBarProps) {

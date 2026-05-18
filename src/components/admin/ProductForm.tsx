@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button';
 interface ProductFormProps {
   initial?: Product | null;
   categories: Category[];
-  onSubmit: (data: Omit<Product, 'id' | 'created_at' | 'category'>) => Promise<void>;
+  onSubmit: (_data: Omit<Product, 'id' | 'created_at' | 'category'>) => Promise<void>;
   onCancel: () => void;
   loading?: boolean;
 }

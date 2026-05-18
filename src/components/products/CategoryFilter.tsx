@@ -5,7 +5,7 @@ import { Category } from '@/types';
 interface CategoryFilterProps {
   categories: Category[];
   selected: string | null;
-  onChange: (id: string | null) => void;
+  onChange: (_id: string | null) => void;
 }
 
 export default function CategoryFilter({ categories, selected, onChange }: CategoryFilterProps) {

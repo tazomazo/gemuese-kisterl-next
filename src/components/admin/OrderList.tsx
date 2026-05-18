@@ -5,7 +5,7 @@ import Button from '@/components/ui/Button';
 
 interface OrderListProps {
   orders: Order[];
-  onMarkFulfilled: (orderId: string) => Promise<void>;
+  onMarkFulfilled: (_orderId: string) => Promise<void>;
 }
 
 export default function OrderList({ orders, onMarkFulfilled }: OrderListProps) {

@@ -15,7 +15,7 @@ interface ImportRow {
 
 interface ExcelImportProps {
   categories: Category[];
-  onImport: (rows: ImportRow[]) => Promise<{ imported: number; errors: string[] } | null>;
+  onImport: (_rows: ImportRow[]) => Promise<{ imported: number; errors: string[] } | null>;
 }
 
 export default function ExcelImport({ categories, onImport }: ExcelImportProps) {
