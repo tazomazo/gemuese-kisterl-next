@@ -43,5 +43,16 @@ export function useOrders() {
     }
   };
 
-  return { orders, loading, error, refetch: fetchOrders, updateStatus };
+  const deleteOrder = async (orderId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, { method: 'DELETE' });
+      if (!res.ok) return false;
+      setOrders((prev) => prev.filter((o) => o.id !== orderId));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  return { orders, loading, error, refetch: fetchOrders, updateStatus, deleteOrder };
 }

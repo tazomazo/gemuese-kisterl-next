@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 interface OrderListProps {
   orders: Order[];
   onUpdateStatus: (_orderId: string, _status: Order['status']) => Promise<boolean>;
+  onDelete: (_orderId: string) => Promise<boolean>;
 }
 
 const STATUS_LABEL: Record<Order['status'], string> = {
@@ -20,7 +21,16 @@ const STATUS_STYLE: Record<Order['status'], string> = {
   done: 'bg-green-100 text-green-700',
 };
 
-export default function OrderList({ orders, onUpdateStatus }: OrderListProps) {
+function handleDelete(order: Order, onDelete: OrderListProps['onDelete']) {
+  const confirmed =
+    order.status === 'done' ||
+    window.confirm(
+      `Bestellung von „${order.user?.name ?? 'Unbekannt'}" wirklich löschen? Der Status ist noch „${STATUS_LABEL[order.status]}".`
+    );
+  if (confirmed) onDelete(order.id);
+}
+
+export default function OrderList({ orders, onUpdateStatus, onDelete }: OrderListProps) {
   if (orders.length === 0) {
     return (
       <div className="rounded-xl border bg-white py-16 text-center text-sm text-gray-400">
@@ -64,6 +74,13 @@ export default function OrderList({ orders, onUpdateStatus }: OrderListProps) {
                   Erledigt
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="danger"
+                onClick={() => handleDelete(order, onDelete)}
+              >
+                Löschen
+              </Button>
             </div>
           </div>
 

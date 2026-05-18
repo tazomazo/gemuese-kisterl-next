@@ -16,7 +16,7 @@ const FILTERS: { value: Filter; label: string }[] = [
 ];
 
 export default function AdminOrdersPage() {
-  const { orders, loading, error, updateStatus } = useOrders();
+  const { orders, loading, error, updateStatus, deleteOrder } = useOrders();
   const [filter, setFilter] = useState<Filter>('all');
 
   const filtered = orders.filter((o) => filter === 'all' || o.status === filter);
@@ -54,7 +54,7 @@ export default function AdminOrdersPage() {
       ) : error ? (
         <p className="text-sm text-red-500">{error}</p>
       ) : (
-        <OrderList orders={filtered} onUpdateStatus={updateStatus} />
+        <OrderList orders={filtered} onUpdateStatus={updateStatus} onDelete={deleteOrder} />
       )}
     </div>
   );

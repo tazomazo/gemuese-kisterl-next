@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 
+// DELETE /api/orders/:id
+export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+  const db = createServerClient();
+  const { error } = await db.from('orders').delete().eq('id', params.id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}
+
 // PATCH /api/orders/:id — update status
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const { status } = await req.json();
