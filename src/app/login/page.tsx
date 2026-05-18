@@ -15,13 +15,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const { fetchUsers } = useAuth();
-
   useEffect(() => {
-    fetchUsers().then(setUsers);
-  }, [fetchUsers]);
+    fetch('/api/users')
+      .then((res) => (res.ok ? res.json() : []))
+      .then(setUsers)
+      .catch(() => setUsers([]));
+  }, []);
 
-  // If already logged in, redirect handled by header
   if (user) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -31,11 +31,8 @@ export default function LoginPage() {
   }
 
   const activeName = useCustom ? customName : selectedName;
-
-  const selectedUser = users.find(
-    (u) => u.name.toLowerCase() === activeName.toLowerCase()
-  );
-  const hasPassword = !!selectedUser; // show password field for existing users
+  const existingUser = users.find((u) => u.name.toLowerCase() === activeName.toLowerCase());
+  const hasPassword = !!existingUser;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +51,6 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Name selection */}
           {!useCustom ? (
             <div className="flex flex-col gap-1">
               <label className="text-sm font-medium text-gray-700">Name auswählen</label>
@@ -72,7 +68,7 @@ export default function LoginPage() {
               </select>
               <button
                 type="button"
-                onClick={() => { setUseCustom(true); setSelectedName(''); }}
+                onClick={() => { setUseCustom(true); setSelectedName(''); setPassword(''); }}
                 className="mt-1 self-start text-xs text-brand-600 hover:underline"
               >
                 + Neuen Namen eingeben
@@ -90,7 +86,7 @@ export default function LoginPage() {
               />
               <button
                 type="button"
-                onClick={() => { setUseCustom(false); setCustomName(''); }}
+                onClick={() => { setUseCustom(false); setCustomName(''); setPassword(''); }}
                 className="mt-1 self-start text-xs text-brand-600 hover:underline"
               >
                 ← Aus Liste wählen
@@ -98,8 +94,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Password */}
-          {(activeName.trim() || hasPassword) && (
+          {activeName.trim() && (
             <div className="relative">
               <Input
                 label={hasPassword ? 'Passwort' : 'Passwort (optional)'}

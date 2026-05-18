@@ -3,19 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/context/AuthContext';
-import { AuthUser, User } from '@/types';
+import { AuthUser } from '@/types';
 
 export function useAuth() {
   const { user, login, logout, isAdmin } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
-  const fetchUsers = async (): Promise<User[]> => {
-    const res = await fetch('/api/users');
-    if (!res.ok) return [];
-    return res.json();
-  };
 
   const signIn = async (name: string, password?: string): Promise<boolean> => {
     setLoading(true);
@@ -76,5 +70,5 @@ export function useAuth() {
     }
   };
 
-  return { user, isAdmin, loading, error, setError, signIn, signOut, fetchUsers, updateProfile };
+  return { user, isAdmin, loading, error, setError, signIn, signOut, updateProfile };
 }
