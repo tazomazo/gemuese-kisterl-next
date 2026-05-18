@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/orders — admin: all orders with items and user info
 export async function GET() {
   const db = createServerClient();

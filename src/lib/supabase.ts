@@ -6,10 +6,9 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 // Browser-safe singleton — env vars are inlined by Next.js at build time
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Server-only client — reads env vars lazily at call time so they are
-// always resolved after Next.js has loaded .env into process.env
+// Server-only client using the service role key — call only inside API routes
 export function createServerClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
   return createClient(url, key, { auth: { persistSession: false } });
 }

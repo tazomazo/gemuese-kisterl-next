@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Order } from '@/types';
 import Button from '@/components/ui/Button';
 
@@ -9,28 +10,34 @@ interface OrderListProps {
   onDelete: (_orderId: string) => Promise<boolean>;
 }
 
-const STATUS_LABEL: Record<Order['status'], string> = {
+const STATUS_LABEL: Record<string, string> = {
   open: 'Offen',
   in_progress: 'In Bearbeitung',
   done: 'Erledigt',
 };
 
-const STATUS_STYLE: Record<Order['status'], string> = {
+const STATUS_STYLE: Record<string, string> = {
   open: 'bg-yellow-100 text-yellow-700',
   in_progress: 'bg-blue-100 text-blue-700',
   done: 'bg-green-100 text-green-700',
 };
 
-function handleDelete(order: Order, onDelete: OrderListProps['onDelete']) {
-  const confirmed =
-    order.status === 'done' ||
-    window.confirm(
-      `Bestellung von „${order.user?.name ?? 'Unbekannt'}" wirklich löschen? Der Status ist noch „${STATUS_LABEL[order.status]}".`
-    );
-  if (confirmed) onDelete(order.id);
-}
-
 export default function OrderList({ orders, onUpdateStatus, onDelete }: OrderListProps) {
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const handleDelete = async (order: Order) => {
+    const label = STATUS_LABEL[order.status] ?? order.status;
+    const confirmed =
+      order.status === 'done' ||
+      window.confirm(
+        `Bestellung von „${order.user?.name ?? 'Unbekannt'}" wirklich löschen?\nAktueller Status: „${label}"`
+      );
+    if (!confirmed) return;
+    setDeleteError(null);
+    const ok = await onDelete(order.id);
+    if (!ok) setDeleteError('Löschen fehlgeschlagen. Bitte erneut versuchen.');
+  };
+
   if (orders.length === 0) {
     return (
       <div className="rounded-xl border bg-white py-16 text-center text-sm text-gray-400">
@@ -41,6 +48,9 @@ export default function OrderList({ orders, onUpdateStatus, onDelete }: OrderLis
 
   return (
     <div className="flex flex-col gap-4">
+      {deleteError && (
+        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{deleteError}</p>
+      )}
       {orders.map((order) => (
         <div key={order.id} className="rounded-xl border bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-start justify-between">
@@ -52,9 +62,9 @@ export default function OrderList({ orders, onUpdateStatus, onDelete }: OrderLis
             </div>
             <div className="flex items-center gap-3">
               <span
-                className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLE[order.status]}`}
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLE[order.status] ?? 'bg-gray-100 text-gray-600'}`}
               >
-                {STATUS_LABEL[order.status]}
+                {STATUS_LABEL[order.status] ?? order.status}
               </span>
               {order.status === 'open' && (
                 <Button
@@ -74,11 +84,7 @@ export default function OrderList({ orders, onUpdateStatus, onDelete }: OrderLis
                   Erledigt
                 </Button>
               )}
-              <Button
-                size="sm"
-                variant="danger"
-                onClick={() => handleDelete(order, onDelete)}
-              >
+              <Button size="sm" variant="danger" onClick={() => handleDelete(order)}>
                 Löschen
               </Button>
             </div>
