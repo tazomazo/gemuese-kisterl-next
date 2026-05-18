@@ -4,7 +4,7 @@
  * Ausführen:
  *   npx tsx scripts/seed.ts
  *
- * Voraussetzung: .env.local muss gesetzt sein
+ * Voraussetzung: .env muss gesetzt sein
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -13,11 +13,11 @@ import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 import ws from 'ws';
 
-dotenv.config({ path: resolve(process.cwd(), '.env.local') });
+dotenv.config({ path: resolve(process.cwd(), '.env') });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   { auth: { persistSession: false }, realtime: { transport: ws as any } }
 );
