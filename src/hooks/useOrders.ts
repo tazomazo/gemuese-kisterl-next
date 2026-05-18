@@ -25,22 +25,23 @@ export function useOrders() {
     fetchOrders();
   }, [fetchOrders]);
 
-  const markFulfilled = async (orderId: string): Promise<boolean> => {
+  const updateStatus = async (
+    orderId: string,
+    status: Order['status']
+  ): Promise<boolean> => {
     try {
       const res = await fetch(`/api/orders/${orderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'fulfilled' }),
+        body: JSON.stringify({ status }),
       });
       if (!res.ok) return false;
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: 'fulfilled' } : o))
-      );
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
       return true;
     } catch {
       return false;
     }
   };
 
-  return { orders, loading, error, refetch: fetchOrders, markFulfilled };
+  return { orders, loading, error, refetch: fetchOrders, updateStatus };
 }

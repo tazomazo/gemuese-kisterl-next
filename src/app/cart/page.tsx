@@ -8,27 +8,9 @@ import CartSummary from '@/components/cart/CartSummary';
 import Button from '@/components/ui/Button';
 
 export default function CartPage() {
-  const { items, totalItems, totalPrice, placeOrder, ordering, orderError, orderSuccess, setOrderSuccess } =
+  const { items, totalItems, totalPrice, publishCart, publishing, publishError, activeOrder, isLocked, isDirty } =
     useCart();
   const { user } = useAuthContext();
-
-  if (orderSuccess) {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4">
-        <span className="text-5xl">🎉</span>
-        <h2 className="text-xl font-bold text-gray-900">Bestellung eingegangen!</h2>
-        <p className="text-sm text-gray-500">Vielen Dank, deine Bestellung wurde aufgenommen.</p>
-        <div className="flex gap-3">
-          <Button onClick={() => setOrderSuccess(false)} variant="secondary">
-            Neuer Warenkorb
-          </Button>
-          <Link href="/">
-            <Button>Weiter einkaufen</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   if (items.length === 0) {
     return (
@@ -47,14 +29,12 @@ export default function CartPage() {
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Warenkorb ({totalItems})</h1>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Item list */}
         <div className="flex flex-col gap-3 lg:col-span-2">
           {items.map((item) => (
-            <CartItemComponent key={item.product.id} item={item} />
+            <CartItemComponent key={item.product.id} item={item} readonly={isLocked} />
           ))}
         </div>
 
-        {/* Summary */}
         <div className="lg:col-span-1">
           {!user && (
             <div className="mb-4 rounded-xl bg-yellow-50 px-4 py-3 text-sm text-yellow-700">
@@ -62,18 +42,23 @@ export default function CartPage() {
               <Link href="/login" className="font-medium underline">
                 anmelden
               </Link>{' '}
-              um zu bestellen.
+              um zu veröffentlichen.
             </div>
           )}
-          {orderError && (
-            <p className="mb-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{orderError}</p>
+          {publishError && (
+            <p className="mb-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">
+              {publishError}
+            </p>
           )}
           <CartSummary
             totalPrice={totalPrice}
             totalItems={totalItems}
-            onOrder={placeOrder}
-            ordering={ordering}
-            disabled={!user}
+            onPublish={publishCart}
+            publishing={publishing}
+            isDirty={isDirty}
+            isLocked={isLocked}
+            orderStatus={activeOrder?.status}
+            userLoggedIn={!!user}
           />
         </div>
       </div>

@@ -25,7 +25,7 @@ export interface Product {
 export interface Order {
   id: string;
   user_id: string;
-  status: 'pending' | 'fulfilled';
+  status: 'open' | 'in_progress' | 'done';
   created_at: string;
   user?: User;
   items?: OrderItem[];

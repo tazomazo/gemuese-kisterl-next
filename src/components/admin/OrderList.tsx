@@ -5,10 +5,22 @@ import Button from '@/components/ui/Button';
 
 interface OrderListProps {
   orders: Order[];
-  onMarkFulfilled: (_orderId: string) => Promise<void>;
+  onUpdateStatus: (_orderId: string, _status: Order['status']) => Promise<boolean>;
 }
 
-export default function OrderList({ orders, onMarkFulfilled }: OrderListProps) {
+const STATUS_LABEL: Record<Order['status'], string> = {
+  open: 'Offen',
+  in_progress: 'In Bearbeitung',
+  done: 'Erledigt',
+};
+
+const STATUS_STYLE: Record<Order['status'], string> = {
+  open: 'bg-yellow-100 text-yellow-700',
+  in_progress: 'bg-blue-100 text-blue-700',
+  done: 'bg-green-100 text-green-700',
+};
+
+export default function OrderList({ orders, onUpdateStatus }: OrderListProps) {
   if (orders.length === 0) {
     return (
       <div className="rounded-xl border bg-white py-16 text-center text-sm text-gray-400">
@@ -30,17 +42,26 @@ export default function OrderList({ orders, onMarkFulfilled }: OrderListProps) {
             </div>
             <div className="flex items-center gap-3">
               <span
-                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
-                  order.status === 'fulfilled'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-yellow-100 text-yellow-700'
-                }`}
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_STYLE[order.status]}`}
               >
-                {order.status === 'fulfilled' ? 'Erledigt' : 'Ausstehend'}
+                {STATUS_LABEL[order.status]}
               </span>
-              {order.status === 'pending' && (
-                <Button size="sm" variant="secondary" onClick={() => onMarkFulfilled(order.id)}>
-                  Erledigen
+              {order.status === 'open' && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => onUpdateStatus(order.id, 'in_progress')}
+                >
+                  In Bearbeitung
+                </Button>
+              )}
+              {order.status === 'in_progress' && (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => onUpdateStatus(order.id, 'done')}
+                >
+                  Erledigt
                 </Button>
               )}
             </div>
